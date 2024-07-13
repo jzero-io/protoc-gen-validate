@@ -4,9 +4,17 @@ const constTpl = `{{ $f := .Field }}{{ $r := .Rules }}
 	{{ if $r.Const }}
 		if {{ accessor . }} != {{ lit $r.GetConst }} {
 			{{- if isEnum $f }}
-			err := {{ err . "value must equal " (enumVal $f $r.GetConst) }}
+			{{ if $r.GetConstMessage }}
+				err := {{ err . $r.GetConstMessage }}
+			{{ else }}
+				err := {{ err . "value must equal " (enumVal $f $r.GetConst) }}
+			{{ end }}
 			{{- else }}
-			err := {{ err . "value must equal " $r.GetConst }}
+			{{ if $r.GetConstMessage }}
+				err := {{ err . $r.GetConstMessage }}
+			{{ else }}
+				err := {{ err . "value must equal " $r.GetConst }}
+			{{ end }}
 			{{- end }}
 			if !all { return err }
 			errors = append(errors, err)

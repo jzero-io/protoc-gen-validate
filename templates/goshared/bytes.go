@@ -10,13 +10,21 @@ const bytesTpl = `
 	{{ if or $r.Len (and $r.MinLen $r.MaxLen (eq $r.GetMinLen $r.GetMaxLen)) }}
 		{{ if $r.Len }}
 			if len({{ accessor . }}) != {{ $r.GetLen }} {
-				err := {{ err . "value length must be " $r.GetLen " bytes" }}
+				{{ if $r.GetLenMessage }}
+					err := {{ err . $r.GetLenMessage }}
+				{{ else }}
+					err := {{ err . "value length must be " $r.GetLen " bytes" }}
+				{{ end }}
 				if !all { return err }
 				errors = append(errors, err)
 			}
 		{{ else }}
 			if len({{ accessor . }}) != {{ $r.GetMinLen }} {
-				err := {{ err . "value length must be " $r.GetMinLen " bytes" }}
+				{{ if $r.GetMinLenMessage }}
+					err := {{ err . $r.GetMinLenMessage }}
+				{{ else }}
+					err := {{ err . "value length must be " $r.GetMinLen " bytes" }}
+				{{ end }}
 				if !all { return err }
 				errors = append(errors, err)
 			}
@@ -30,14 +38,22 @@ const bytesTpl = `
 			}
 		{{ else }}
 			if len({{ accessor . }}) < {{ $r.GetMinLen }} {
-				err := {{ err . "value length must be at least " $r.GetMinLen " bytes" }}
+				{{ if $r.GetMinLenMessage }}
+					err := {{ err . $r.GetMinLenMessage }}
+				{{ else }}
+					err := {{ err . "value length must be at least " $r.GetMinLen " bytes" }}
+				{{ end }}
 				if !all { return err }
 				errors = append(errors, err)
 			}
 		{{ end }}
 	{{ else if $r.MaxLen }}
 		if len({{ accessor . }}) > {{ $r.GetMaxLen }} {
-			err := {{ err . "value length must be at most " $r.GetMaxLen " bytes" }}
+			{{ if $r.GetMaxLenMessage }}
+				err := {{ err . $r.GetMaxLenMessage }}
+			{{ else }}
+				err := {{ err . "value length must be at most " $r.GetMaxLen " bytes" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
@@ -45,7 +61,11 @@ const bytesTpl = `
 
 	{{ if $r.Prefix }}
 		if !bytes.HasPrefix({{ accessor . }}, {{ lit $r.GetPrefix }}) {
-			err := {{ err . "value does not have prefix " (byteStr $r.GetPrefix) }}
+			{{ if $r.GetPrefixMessage }}
+				err := {{ err . $r.GetPrefixMessage }}
+			{{ else }}
+				err := {{ err . "value does not have prefix " (byteStr $r.GetPrefix) }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
@@ -53,7 +73,11 @@ const bytesTpl = `
 
 	{{ if $r.Suffix }}
 		if !bytes.HasSuffix({{ accessor . }}, {{ lit $r.GetSuffix }}) {
-			err := {{ err . "value does not have suffix " (byteStr $r.GetSuffix) }}
+			{{ if $r.GetSuffixMessage }}
+				err := {{ err . $r.GetSuffixMessage }}
+			{{ else }}
+				err := {{ err . "value does not have suffix " (byteStr $r.GetSuffix) }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
@@ -61,7 +85,11 @@ const bytesTpl = `
 
 	{{ if $r.Contains }}
 		if !bytes.Contains({{ accessor . }}, {{ lit $r.GetContains }}) {
-			err := {{ err . "value does not contain " (byteStr $r.GetContains) }}
+			{{ if $r.GetContainsMessage }}
+				err := {{ err . $r.GetContainsMessage }}
+			{{ else }}
+				err := {{ err . "value does not contain " (byteStr $r.GetContains) }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
@@ -69,13 +97,21 @@ const bytesTpl = `
 
 	{{ if $r.In }}
 		if _, ok := {{ lookup $f "InLookup" }}[string({{ accessor . }})]; !ok {
-			err := {{ err . "value must be in list " $r.In }}
+			{{ if $r.GetInMessage }}
+				err := {{ err . $r.GetInMessage }}
+			{{ else }}
+				err := {{ err . "value must be in list " $r.In }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
 	{{ else if $r.NotIn }}
 		if _, ok := {{ lookup $f "NotInLookup" }}[string({{ accessor . }})]; ok {
-			err := {{ err . "value must not be in list " $r.NotIn }}
+			{{ if $r.GetNotInMessage }}
+				err := {{ err . $r.GetNotInMessage }}
+			{{ else }}
+				err := {{ err . "value must not be in list " $r.NotIn }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
@@ -83,7 +119,11 @@ const bytesTpl = `
 
 	{{ if $r.Const }}
 		if !bytes.Equal({{ accessor . }}, {{ lit $r.Const }}) {
-			err := {{ err . "value must equal " $r.Const }}
+			{{ if $r.GetConstMessage }}
+				err := {{ err . $r.GetConstMessage }}
+			{{ else }}
+				err := {{ err . "value must equal " $r.Const }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
@@ -91,19 +131,31 @@ const bytesTpl = `
 
 	{{ if $r.GetIp }}
 		if ip := net.IP({{ accessor . }}); ip.To16() == nil {
-			err := {{ err . "value must be a valid IP address" }}
+			{{ if $r.GetIpMessage }}
+				err := {{ err . $r.GetIpMessage }}
+			{{ else }}
+				err := {{ err . "value must be a valid IP address" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
 	{{ else if $r.GetIpv4 }}
 		if ip := net.IP({{ accessor . }}); ip.To4() == nil {
-			err := {{ err . "value must be a valid IPv4 address" }}
+			{{ if $r.GetIpv4Message }}
+				err := {{ err . $r.GetIpv4Message }}
+			{{ else }}
+				err := {{ err . "value must be a valid IPv4 address" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
 	{{ else if $r.GetIpv6 }}
 		if ip := net.IP({{ accessor . }}); ip.To16() == nil || ip.To4() != nil {
-			err := {{ err . "value must be a valid IPv6 address" }}
+			{{ if $r.GetIpv6Message }}
+				err := {{ err . $r.GetIpv6Message }}
+			{{ else }}
+				err := {{ err . "value must be a valid IPv6 address" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
@@ -111,7 +163,11 @@ const bytesTpl = `
 
 	{{ if $r.Pattern }}
 	if !{{ lookup $f "Pattern" }}.Match({{ accessor . }}) {
-		err := {{ err . "value does not match regex pattern " (lit $r.GetPattern) }}
+		{{ if $r.GetPatternMessage }}
+			err := {{ err . $r.GetPatternMessage }}
+		{{ else }}
+			err := {{ err . "value does not match regex pattern " (lit $r.GetPattern) }}
+		{{ end }}
 		if !all { return err }
 		errors = append(errors, err)
 	}
