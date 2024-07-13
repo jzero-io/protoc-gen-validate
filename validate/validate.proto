@@ -73,28 +73,34 @@ message FloatRules {
     // Lt specifies that this field must be less than the specified value,
     // exclusive
     optional float lt = 2;
+    optional string lt_message = 9;
 
     // Lte specifies that this field must be less than or equal to the
     // specified value, inclusive
     optional float lte = 3;
+    optional string lte_message = 10;
 
     // Gt specifies that this field must be greater than the specified value,
     // exclusive. If the value of Gt is larger than a specified Lt or Lte, the
     // range is reversed.
     optional float gt = 4;
+    optional string gt_message = 11;
 
     // Gte specifies that this field must be greater than or equal to the
     // specified value, inclusive. If the value of Gte is larger than a
     // specified Lt or Lte, the range is reversed.
     optional float gte = 5;
+    optional string gte_message = 12;
 
     // In specifies that this field must be equal to one of the specified
     // values
     repeated float in = 6;
+    optional string in_message = 13;
 
     // NotIn specifies that this field cannot be equal to one of the specified
     // values
     repeated float not_in = 7;
+    optional string not_in_message = 14;
 
     // IgnoreEmpty specifies that the validation rules of this field should be
     // evaluated only if the field is not empty
@@ -145,28 +151,34 @@ message Int32Rules {
     // Lt specifies that this field must be less than the specified value,
     // exclusive
     optional int32 lt = 2;
+    optional string lt_message = 9;
 
     // Lte specifies that this field must be less than or equal to the
     // specified value, inclusive
     optional int32 lte = 3;
+    optional string lte_message = 10;
 
     // Gt specifies that this field must be greater than the specified value,
     // exclusive. If the value of Gt is larger than a specified Lt or Lte, the
     // range is reversed.
     optional int32 gt = 4;
+    optional string gt_message = 11;
 
     // Gte specifies that this field must be greater than or equal to the
     // specified value, inclusive. If the value of Gte is larger than a
     // specified Lt or Lte, the range is reversed.
     optional int32 gte = 5;
+    optional string gte_message = 12;
 
     // In specifies that this field must be equal to one of the specified
     // values
     repeated int32 in = 6;
+    optional string in_message = 13;
 
     // NotIn specifies that this field cannot be equal to one of the specified
     // values
     repeated int32 not_in = 7;
+    optional string not_in_message = 14;
 
     // IgnoreEmpty specifies that the validation rules of this field should be
     // evaluated only if the field is not empty
