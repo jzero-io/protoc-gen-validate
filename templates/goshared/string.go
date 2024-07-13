@@ -13,12 +13,20 @@ const strTpl = `
 	{{ if or $r.Len (and $r.MinLen $r.MaxLen (eq $r.GetMinLen $r.GetMaxLen)) }}
 		{{ if $r.Len }}
 		if utf8.RuneCountInString({{ accessor . }}) != {{ $r.GetLen }} {
-			err := {{ err . "value length must be " $r.GetLen " runes" }}
+			{{ if $r.GetLenMessage }}
+				err := {{ err . $r.GetLenMessage }}
+			{{ else }}
+				err := {{ err . "value length must be " $r.GetLen " runes" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		{{ else }}
 		if utf8.RuneCountInString({{ accessor . }}) != {{ $r.GetMinLen }} {
-			err := {{ err . "value length must be " $r.GetMinLen " runes" }}
+			{{ if $r.GetMinLenMessage }}
+				err := {{ err . $r.GetMinLenMessage }}
+			{{ else }}
+				err := {{ err . "value length must be " $r.GetMinLen " runes" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		{{ end }}
@@ -32,14 +40,22 @@ const strTpl = `
 			}
 		{{ else }}
 			if utf8.RuneCountInString({{ accessor . }}) < {{ $r.GetMinLen }} {
-				err := {{ err . "value length must be at least " $r.GetMinLen " runes" }}
+				{{ if $r.GetMinLenMessage }}
+					err := {{ err . $r.GetMinLenMessage }}
+				{{ else }}
+					err := {{ err . "value length must be at least " $r.GetMinLen " runes" }}
+				{{ end }}
 				if !all { return err }
 				errors = append(errors, err)
 			}
 		{{ end }}
 	{{ else if $r.MaxLen }}
 		if utf8.RuneCountInString({{ accessor . }}) > {{ $r.GetMaxLen }} {
-			err := {{ err . "value length must be at most " $r.GetMaxLen " runes" }}
+			{{ if $r.GetMaxLenMessage }}
+				err := {{ err . $r.GetMaxLenMessage }}
+			{{ else }}
+				err := {{ err . "value length must be at most " $r.GetMaxLen " runes" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
@@ -48,13 +64,21 @@ const strTpl = `
 	{{ if or $r.LenBytes (and $r.MinBytes $r.MaxBytes (eq $r.GetMinBytes $r.GetMaxBytes)) }}
 		{{ if $r.LenBytes }}
 			if len({{ accessor . }}) != {{ $r.GetLenBytes }} {
-				err := {{ err . "value length must be " $r.GetLenBytes " bytes" }}
+				{{ if $r.GetLenBytesMessage }}
+					err := {{ err . $r.GetLenBytesMessage }}
+				{{ else }}
+					err := {{ err . "value length must be " $r.GetLenBytes " bytes" }}
+				{{ end }}
 				if !all { return err }
 				errors = append(errors, err)
 			}
 		{{ else }}
 			if len({{ accessor . }}) != {{ $r.GetMinBytes }} {
-				err := {{ err . "value length must be " $r.GetMinBytes " bytes" }}
+				{{ if $r.GetMinBytesMessage }}
+					err := {{ err . $r.GetMinBytesMessage }}
+				{{ else }}
+					err := {{ err . "value length must be " $r.GetMinBytes " bytes" }}
+				{{ end }}
 				if !all { return err }
 				errors = append(errors, err)
 			}
@@ -68,14 +92,22 @@ const strTpl = `
 			}
 		{{ else }}
 			if len({{ accessor . }}) < {{ $r.GetMinBytes }} {
-				err := {{ err . "value length must be at least " $r.GetMinBytes " bytes" }}
+				{{ if $r.GetMinBytesMessage }}
+					err := {{ err . $r.GetMinBytesMessage }}
+				{{ else }}
+					err := {{ err . "value length must be at least " $r.GetMinBytes " bytes" }}
+				{{ end }}
 				if !all { return err }
 				errors = append(errors, err)
 			}
 		{{ end }}
 	{{ else if $r.MaxBytes }}
 		if len({{ accessor . }}) > {{ $r.GetMaxBytes }} {
-			err := {{ err . "value length must be at most " $r.GetMaxBytes " bytes" }}
+			{{ if $r.GetMaxBytesMessage }}
+				err := {{ err . $r.GetMaxBytesMessage }}
+			{{ else }}
+				err := {{ err . "value length must be at most " $r.GetMaxBytes " bytes" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
@@ -83,7 +115,11 @@ const strTpl = `
 
 	{{ if $r.Prefix }}
 		if !strings.HasPrefix({{ accessor . }}, {{ lit $r.GetPrefix }}) {
-			err := {{ err . "value does not have prefix " (lit $r.GetPrefix) }}
+			{{ if $r.GetPrefixMessage }}
+				err := {{ err . $r.GetPrefixMessage }}
+			{{ else }}
+				err := {{ err . "value does not have prefix " (lit $r.GetPrefix) }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
@@ -91,7 +127,11 @@ const strTpl = `
 
 	{{ if $r.Suffix }}
 		if !strings.HasSuffix({{ accessor . }}, {{ lit $r.GetSuffix }}) {
-			err := {{ err . "value does not have suffix " (lit $r.GetSuffix) }}
+			{{ if $r.GetSuffixMessage }}
+				err := {{ err . $r.GetSuffixMessage }}
+			{{ else }}
+				err := {{ err . "value does not have suffix " (lit $r.GetSuffix) }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
@@ -99,7 +139,11 @@ const strTpl = `
 
 	{{ if $r.Contains }}
 		if !strings.Contains({{ accessor . }}, {{ lit $r.GetContains }}) {
-			err := {{ err . "value does not contain substring " (lit $r.GetContains) }}
+			{{ if $r.GetContainsMessage }}
+				err := {{ err . $r.GetContainsMessage }}
+			{{ else }}
+				err := {{ err . "value does not contain substring " (lit $r.GetContains) }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
@@ -107,7 +151,11 @@ const strTpl = `
 
 	{{ if $r.NotContains }}
 		if strings.Contains({{ accessor . }}, {{ lit $r.GetNotContains }}) {
-			err := {{ err . "value contains substring " (lit $r.GetNotContains) }}
+			{{ if $r.GetNotContainsMessage }}
+				err := {{ err . $r.GetNotContainsMessage }}
+			{{ else }}
+				err := {{ err . "value contains substring " (lit $r.GetNotContains) }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
@@ -115,45 +163,73 @@ const strTpl = `
 
 	{{ if $r.GetIp }}
 		if ip := net.ParseIP({{ accessor . }}); ip == nil {
-			err := {{ err . "value must be a valid IP address" }}
+			{{ if $r.GetIpMessage }}
+				err := {{ err . $r.GetIpMessage }}
+			{{ else }}
+				err := {{ err . "value must be a valid IP address" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
 	{{ else if $r.GetIpv4 }}
 		if ip := net.ParseIP({{ accessor . }}); ip == nil || ip.To4() == nil {
-			err := {{ err . "value must be a valid IPv4 address" }}
+			{{ if $r.GetIpv4Message }}
+				err := {{ err . $r.GetIpv4Message }}
+			{{ else }}
+				err := {{ err . "value must be a valid IPv4 address" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
 	{{ else if $r.GetIpv6 }}
 		if ip := net.ParseIP({{ accessor . }}); ip == nil || ip.To4() != nil {
-			err := {{ err . "value must be a valid IPv6 address" }}
+			{{ if $r.GetIpv6Message }}
+				err := {{ err . $r.GetIpv6Message }}
+			{{ else }}
+				err := {{ err . "value must be a valid IPv6 address" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
 	{{ else if $r.GetEmail }}
 		if err := m._validateEmail({{ accessor . }}); err != nil {
-			err = {{ errCause . "err" "value must be a valid email address" }}
+			{{ if $r.GetEmailMessage }}
+				err = {{ errCause . "err" $r.GetEmailMessage }}
+			{{ else }}
+				err = {{ errCause . "err" "value must be a valid email address" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
 	{{ else if $r.GetHostname }}
 		if err := m._validateHostname({{ accessor . }}); err != nil {
-			err = {{ errCause . "err" "value must be a valid hostname" }}
+			{{ if $r.GetHostnameMessage }}
+				err = {{ errCause . "err" $r.GetHostnameMessage }}
+			{{ else }}
+				err = {{ errCause . "err" "value must be a valid hostname" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
 	{{ else if $r.GetAddress }}
 		if err := m._validateHostname({{ accessor . }}); err != nil {
 			if ip := net.ParseIP({{ accessor . }}); ip == nil {
-				err := {{ err . "value must be a valid hostname, or ip address" }}
+				{{ if $r.GetAddressMessage }}
+					err = {{ err . $r.GetAddressMessage }}
+				{{ else }}
+					err := {{ err . "value must be a valid hostname, or ip address" }}
+				{{ end }}
 				if !all { return err }
 				errors = append(errors, err)
 			}
 		}
 	{{ else if $r.GetUri }}
 		if uri, err := url.Parse({{ accessor . }}); err != nil {
-			err = {{ errCause . "err" "value must be a valid URI" }}
+			{{ if $r.GetUriMessage }}
+				err = {{ errCause . "err" $r.GetUriMessage }}
+			{{ else }}
+				err = {{ errCause . "err" "value must be a valid URI" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		} else if !uri.IsAbs() {
@@ -163,13 +239,21 @@ const strTpl = `
 		}
 	{{ else if $r.GetUriRef }}
 		if _, err := url.Parse({{ accessor . }}); err != nil {
-			err = {{ errCause . "err" "value must be a valid URI" }}
+			{{ if $r.GetUriRefMessage }}
+				err = {{ errCause . "err" $r.GetUriRefMessage }}
+			{{ else }}
+				err = {{ errCause . "err" "value must be a valid URI" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
 	{{ else if $r.GetUuid }}
 		if err := m._validateUuid({{ accessor . }}); err != nil {
-			err = {{ errCause . "err" "value must be a valid UUID" }}
+			{{ if $r.GetUuidMessage }}
+				err = {{ errCause . "err" $r.GetUuidMessage }}
+			{{ else }}
+				err = {{ errCause . "err" "value must be a valid UUID" }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
@@ -177,7 +261,11 @@ const strTpl = `
 
 	{{ if $r.Pattern }}
 		if !{{ lookup $f "Pattern" }}.MatchString({{ accessor . }}) {
-			err := {{ err . "value does not match regex pattern " (lit $r.GetPattern) }}
+			{{ if $r.GetPatternMessage }}
+				err := {{ err . $r.GetPatternMessage }}
+			{{ else }}
+				err := {{ err . "value does not match regex pattern " (lit $r.GetPattern) }}
+			{{ end }}
 			if !all { return err }
 			errors = append(errors, err)
 		}
