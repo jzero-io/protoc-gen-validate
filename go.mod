@@ -1,8 +1,9 @@
-module github.com/envoyproxy/protoc-gen-validate
+module github.com/jzero-io/protoc-gen-validate
 
 go 1.19
 
 require (
+	github.com/envoyproxy/protoc-gen-validate v0.1.0
 	github.com/iancoleman/strcase v0.3.0
 	github.com/lyft/protoc-gen-star/v2 v2.0.4-0.20230330145011-496ad1ac90a4
 	golang.org/x/net v0.26.0
@@ -10,6 +11,8 @@ require (
 )
 
 require (
+	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/lyft/protoc-gen-star v0.6.2 // indirect
 	github.com/spf13/afero v1.10.0 // indirect
 	golang.org/x/mod v0.17.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
