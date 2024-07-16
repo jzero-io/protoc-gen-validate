@@ -5,8 +5,8 @@ const ltgtTpl = `{{ $f := .Field }}{{ $r := .Rules }}
 		{{ if $r.Gt }}
 			{{  if gt $r.GetLt $r.GetGt }}
 				if val := {{ accessor . }};  val <= {{ $r.Gt }} || val >= {{ $r.Lt }} {
-					{{ if $r.LtGtMessage }}
-						err := {{ err . $r.GetLtGtMessage }}
+					{{ if $r.GtLtMessage }}
+						err := {{ err . $r.GetGtLtMessage }}
 					{{ else }}
 						err := {{ err . "value must be inside range (" $r.GetGt ", " $r.GetLt ")" }}
 					{{ end }}
@@ -15,8 +15,8 @@ const ltgtTpl = `{{ $f := .Field }}{{ $r := .Rules }}
 				}
 			{{ else }}
 				if val := {{ accessor . }}; val >= {{ $r.Lt }} && val <= {{ $r.Gt }} {
-					{{ if $r.LtGtMessage }}
-						err := {{ err . $r.GetLtGtMessage }}
+					{{ if $r.GtLtMessage }}
+						err := {{ err . $r.GetGtLtMessage }}
 					{{ else }}
 						err := {{ err . "value must be outside range [" $r.GetLt ", " $r.GetGt "]" }}
 					{{ end }}
@@ -27,8 +27,8 @@ const ltgtTpl = `{{ $f := .Field }}{{ $r := .Rules }}
 		{{ else if $r.Gte }}
 			{{  if gt $r.GetLt $r.GetGte }}
 				if val := {{ accessor . }};  val < {{ $r.Gte }} || val >= {{ $r.Lt }} {
-					{{ if $r.LtGteMessage }}
-						err := {{ err . $r.GetLtGteMessage }}
+					{{ if $r.GtLteMessage }}
+						err := {{ err . $r.GetGtLteMessage }}
 					{{ else }}
 						err := {{ err . "value must be inside range [" $r.GetGte ", " $r.GetLt ")" }}
 					{{ end }}
@@ -37,8 +37,8 @@ const ltgtTpl = `{{ $f := .Field }}{{ $r := .Rules }}
 				}
 			{{ else }}
 				if val := {{ accessor . }}; val >= {{ $r.Lt }} && val < {{ $r.Gte }} {
-					{{ if $r.LtGteMessage }}
-						err := {{ err . $r.GetLtGteMessage }}
+					{{ if $r.GtLteMessage }}
+						err := {{ err . $r.GetGtLteMessage }}
 					{{ else }}
 						err := {{ err . "value must be outside range [" $r.GetLt ", " $r.GetGte ")" }}
 					{{ end }}
@@ -61,8 +61,8 @@ const ltgtTpl = `{{ $f := .Field }}{{ $r := .Rules }}
 		{{ if $r.Gt }}
 			{{  if gt $r.GetLte $r.GetGt }}
 				if val := {{ accessor . }};  val <= {{ $r.Gt }} || val > {{ $r.Lte }} {
-					{{ if $r.LteGtMessage }}
-						err := {{ err . $r.GetLteGtMessage }}
+					{{ if $r.GteLtMessage }}
+						err := {{ err . $r.GetGteLtMessage }}
 					{{ else }}
 						err := {{ err . "value must be inside range (" $r.GetGt ", " $r.GetLte "]" }}
 					{{ end }}
@@ -71,8 +71,8 @@ const ltgtTpl = `{{ $f := .Field }}{{ $r := .Rules }}
 				}
 			{{ else }}
 				if val := {{ accessor . }}; val > {{ $r.Lte }} && val <= {{ $r.Gt }} {
-					{{ if $r.LteGtMessage }}
-						err := {{ err . $r.GetLteGtMessage }}
+					{{ if $r.GteLtMessage }}
+						err := {{ err . $r.GetGteLtMessage }}
 					{{ else }}
 						err := {{ err . "value must be outside range (" $r.GetLte ", " $r.GetGt "]" }}
 					{{ end }}
@@ -83,8 +83,8 @@ const ltgtTpl = `{{ $f := .Field }}{{ $r := .Rules }}
 		{{ else if $r.Gte }}
 			{{ if gt $r.GetLte $r.GetGte }}
 				if val := {{ accessor . }};  val < {{ $r.Gte }} || val > {{ $r.Lte }} {
-					{{ if $r.LteGteMessage }}
-						err := {{ err . $r.GetLteGteMessage }}
+					{{ if $r.GteLteMessage }}
+						err := {{ err . $r.GetGteLteMessage }}
 					{{ else }}
 						err := {{ err . "value must be inside range [" $r.GetGte ", " $r.GetLte "]" }}
 					{{ end }}
@@ -93,8 +93,8 @@ const ltgtTpl = `{{ $f := .Field }}{{ $r := .Rules }}
 				}
 			{{ else }}
 				if val := {{ accessor . }}; val > {{ $r.Lte }} && val < {{ $r.Gte }} {
-					{{ if $r.LteGteMessage }}
-						err := {{ err . $r.GetLteGteMessage }}
+					{{ if $r.GteLteMessage }}
+						err := {{ err . $r.GetGteLteMessage }}
 					{{ else }}
 						err := {{ err . "value must be outside range (" $r.GetLte ", " $r.GetGte ")" }}
 					{{ end }}
